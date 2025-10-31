@@ -12,7 +12,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      # Copia (SCP) o repositório inteiro para a VPS em /opt/site_bravion
+      # Copia o repositório para a VPS sem usar rsync
       - name: Copy project to VPS via SCP
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -23,11 +23,9 @@ jobs:
           target: "/opt/site_bravion"
           rm: true
           overwrite: true
-          # Exclui a própria pasta .git e a pasta de workflows se quiser
-          # (o Dockerfile/compose precisam ir, então não exclua nada além de .git)
           exclude: ".git"
 
-      # Sobe o container via docker compose (Traefik já preparado)
+      # Sobe os containers via Docker Compose
       - name: Compose build & up -d on VPS
         uses: appleboy/ssh-action@v1.2.0
         with:
