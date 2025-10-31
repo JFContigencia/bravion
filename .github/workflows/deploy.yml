@@ -22,7 +22,6 @@ jobs:
           remote_user: ${{ secrets.VPS_USER }}
           remote_key: ${{ secrets.VPS_SSH_KEY }}
 
-
       - name: Compose build & up -d on VPS
         uses: appleboy/ssh-action@v1.2.0
         with:
@@ -30,8 +29,9 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
-            cd ${{ secrets.VPS_TARGET_DIR }}
+            cd /opt/site_bravion
             docker network ls | grep traefik_network || docker network create traefik_network
+            command -v rsync >/dev/null 2>&1 || (sudo apt-get update && sudo apt-get install -y rsync)
             docker compose pull || true
             docker compose build
             docker compose up -d
